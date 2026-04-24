@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.XR.ARSubsystems;
 
 public class ImageDetector : MonoBehaviour
 {
@@ -36,7 +37,7 @@ public class ImageDetector : MonoBehaviour
         var text = textComponent.GetComponentInChildren<TMP_Text>();
         foreach (ARTrackedImage image in eventArgs.added)
         {
-            textComponent.SetActive(true);
+            /*textComponent.SetActive(true);
             string imageName = image.referenceImage.name;
             Vector3 spawnPosition = image.transform.position;
             textComponent.transform.SetParent(image.transform);
@@ -77,23 +78,53 @@ public class ImageDetector : MonoBehaviour
             
             //continue
             
-            
+            */
         }
 
         foreach (ARTrackedImage image in eventArgs.updated)
         {
-            
+            if (image.trackingState == TrackingState.Tracking)
+            {
+                textComponent.SetActive(true);
+                string imageName = image.referenceImage.name;
+                textComponent.transform.SetParent(image.transform);
+                textComponent.transform.localPosition = Vector3.zero+new Vector3(1,0,0);
+                Debug.Log("Image Added: "+imageName);
+                switch (imageName)
+                {
+                    case "one":
+                        text.text = "Ceci est un 1 ";
+                    
+                        break;
+                    case "two":
+                        text.text = "Ceci est un 2 ";
+                    
+                        break;
+                    case "Rafflesia":
+                        text.text = "Magnifique fleur ";
+                    
+                        break;
+                    case "QRCode":
+                        text.text = "Ce QR Code ne sert à rien ";
+                    
+                        break;
+                    case "unitylogowhiteonblack":
+                        text.text = "Beau moteur ! ";
+                    
+                        break;
+                    case "GoldenTrumpet":
+                        text.text = "J'ai pas compris ce que c'était ";
+                    
+                        break;
+
+                    default:
+                        Debug.Log("Prefab Not Found");
+                        break;
+                
+                }
+            }
         }
-
-        foreach (var image in eventArgs.removed)
-        {
-            Debug.Log("Image Removed");
-        }
-
-
     }
-
-
     // Update is called once per frame
     void Update()
     {
@@ -101,6 +132,4 @@ public class ImageDetector : MonoBehaviour
         direction = Vector3.ProjectOnPlane(direction, Vector3.up);
         textComponent.transform.rotation = Quaternion.LookRotation(direction);
     }
-    
-
 }
